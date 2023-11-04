@@ -1,21 +1,20 @@
-# Conone 65
+# ENTER67 - PCB
 
-![Conone65 PCB](https://i.imgur.com/50dKAqh.jpeg)
+![enter67](https://imgur.com/igF8Lurh.jpg)
 
-The Conone 65 is a custom keyboard designed and machined in Belgium.
+67 layout PCB, with option for stepped Caps Lock
 
-* Keyboard Maintainer: [Evyd13](https://github.com/evyd13), [Matt Chan](https://github.com/mattchan)
-* Hardware Supported: Conone 65 PCB, ATMega32u4
-* Hardware Availability: https://www.kindakeyboards.be/conone65
+* Keyboard Maintainer: https://github.com/LXF-YZP
+* Hardware Supported: enter67 PCB
 
 Make example for this keyboard (after setting up your build environment):
-
-    make kindakeyboards/conone65:default
-
+    
+    make enter67:default
+    
 Flashing example for this keyboard:
 
-    make kindakeyboards/conone65:default:flash
-
+    make enter67:default:flash
+    
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
 
 ## Bootloader
