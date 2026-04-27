@@ -23,6 +23,7 @@ enum preonic_layers {
   _DVORAK,
   _LOWER,
   _RAISE,
+  _RAISE_DV,
   _ADJUST
 };
 
@@ -116,8 +117,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_LOWER] = LAYOUT_preonic_grid(
   KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
   KC_TAB,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-  KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT, KC_DEL,
-  KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  KC_F12,
+  KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,
+  KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_F12,
   BACKLIT, KC_ESC,  KC_LGUI, KC_LALT, _______, KC_SPC,  KC_SPC,  RAISE,   KC_BSPC, KC_UP,   KC_DOWN, KC_LEFT
 ),
 
@@ -140,6 +141,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS, KC_GRV,
   KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
   BACKLIT, KC_ESC,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  _______, KC_BSPC, KC_UP,   KC_DOWN, KC_LEFT
+),
+
+/* Raise (Dvorak overlay) — pre-translates symbols so firmware-Dvorak + OS-QWERTY
+ * (Android) outputs the same characters as firmware-QWERTY + OS-Dvorak (Linux).
+ * Stacks on top of _RAISE when default layer is _DVORAK; transparent cells fall
+ * through to _RAISE.
+ */
+[_RAISE_DV] = LAYOUT_preonic_grid(
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, KC_LBRC, KC_RBRC, KC_SLSH, KC_EQL,  _______, _______,
+  _______, _______, _______, _______, _______, _______, KC_LCBR, KC_RCBR, KC_QUES, KC_PLUS, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
 /* Adjust (Lower + Raise)
@@ -199,9 +213,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case RAISE:
           if (record->event.pressed) {
             layer_on(_RAISE);
+            if (get_highest_layer(default_layer_state) == _DVORAK) {
+              layer_on(_RAISE_DV);
+            }
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           } else {
             layer_off(_RAISE);
+            layer_off(_RAISE_DV);
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           }
           return false;
